@@ -1,8 +1,16 @@
 # 1. Напишите программу, которая получает целое число и возвращает
 # его двоичное, восьмеричное и шестинадцеричное строковое представление.
+
 class Base:
+    """
+    summary: Simple class with static methods for conversion to different bases.
+    Binary, Octagonal and Hexagonal.
+    Methods return false if number can not be processed by the class.
+    """
     @staticmethod
     def dec_to_bin(num: int) -> str:
+        if not Base.valid(num):
+            raise ValueError("Error!\nIncorrect number was entered.")
         num_str = ""
 
         # Base cases
@@ -24,10 +32,13 @@ class Base:
                     num //= 2
             num_str += f"{1}"
             num_str = num_str[::-1]
-        return num_str
+        num_str = num_str[::-1] + "b0"
+        return num_str[::-1]
 
     @staticmethod
     def dec_to_oct(num: int) -> str:
+        if not Base.valid(num):
+            raise ValueError("Error!\nIncorrect number was entered.")
         num_str: str = ""
         octagonal: list[int] = [i for i in range(8)]
         # Base case
@@ -40,10 +51,13 @@ class Base:
                 num //= 8
             num_str += f"{num}"
             num_str = num_str[::-1]
-        return num_str
+        num_str = num_str[::-1] + "o0"
+        return num_str[::-1]
 
     @staticmethod
     def dec_to_hex(num: int) -> str:
+        if not Base.valid(num):
+            raise ValueError("Error!\nIncorrect number was entered.")
         h_dict: dict[int: str] = {10: "a", 11: "b", 12: "c",
                                   13: "d", 14: "e", 15: "f"}
         num_str: str = ""
@@ -51,9 +65,9 @@ class Base:
         # Base case
         if num in range(0, 16):
             if h_dict.get(num) is not None:
-                return h_dict[num]
+                return "0x" + str(h_dict[num])
             else:
-                return f"{num}"
+                return f"0x{num}"
         else:
             while num not in range(0, 16):
                 if h_dict.get(num % 16) is not None:
@@ -66,34 +80,22 @@ class Base:
             else:
                 num_str += f"{num}"
             num_str = num_str[::-1]
-        return num_str
+        num_str = num_str[::-1] + "x0"
+        return num_str[::-1]
 
-
-def main():
-    num_int: int = 0
-
-    print("Program is running!")
-
-    try:
-        num_int = int(input("Enter a number to convert.\n"))
-    except ValueError:
-        print("Error!\nPlease enter a valid number.")
-        main()
-
-    if num_int < 0:
-        num_int *= -1
-
-    print(f"Function: 0b{Base.dec_to_bin(num_int)}\n"
-          f"In-built function: {bin(num_int)}")
-
-    print(f"Function: 00{Base.dec_to_oct(num_int)}\n"
-          f"In-built function: {oct(num_int)}")
-
-    print(f"Function: 0x{Base.dec_to_hex(num_int)}\n"
-          f"In-built function: {hex(num_int)}")
-
-    return 0
+    @staticmethod
+    def valid(num: int) -> bool:
+        if num < 0:
+            return False
+        elif not isinstance(num, int):
+            return False
+        else:
+            return True
 
 
 if __name__ == "__main__":
-    main()
+    print(Base.dec_to_bin(7) == bin(7))
+    print(Base.dec_to_oct(7) == oct(7))
+    print(Base.dec_to_hex(7) == hex(7))
+    print(Base.dec_to_hex(7))
+    # print(Base.dec_to_bin(-10))
